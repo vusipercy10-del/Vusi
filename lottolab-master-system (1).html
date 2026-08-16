@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOTTO LAB MASTER SYSTEM</title>
+<style>
+:root{--bg:#050505;--panel:#0d0d0d;--panel2:#141414;--line:#343434;--text:#fff;--muted:#aaa;--accent:#fff;--accentText:#000;--glow:#202020}
+html[data-skin="emerald"]{--accent:#22e07a;--accentText:#04150c;--glow:#0e2a1c;--bg:#050807;--line:#233b2f}
+html[data-skin="gold"]{--accent:#f5c451;--accentText:#241900;--glow:#2a2013;--bg:#080604;--line:#3a3120}
+html[data-skin="azure"]{--accent:#3fa9ff;--accentText:#001322;--glow:#0d2233;--bg:#040608;--line:#243848}
+html[data-skin="crimson"]{--accent:#ff4d5e;--accentText:#280005;--glow:#2a0d10;--bg:#080404;--line:#3a2325}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+button,input,select,textarea{font:inherit}
+.shell{min-height:100vh;background:radial-gradient(circle at 50% -10%,var(--glow) 0,var(--bg) 38%)}
+.top{padding:18px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:20px;align-items:center;background:#070707;position:sticky;top:0;z-index:10}
+.brand{display:flex;gap:13px;align-items:center}
+.logo{width:52px;height:52px;background:var(--accent);color:var(--accentText);border-radius:12px;display:grid;place-items:center;font-weight:1000;font-size:18px}
+.brand h1{margin:0;font-size:20px;letter-spacing:1px}
+.brand p{margin:3px 0 0;font-size:11px;color:#aaa;letter-spacing:2px}
+.topRight{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.topRight select{background:#111;color:#fff;border:1px solid #444;border-radius:9px;padding:10px}
+.skinPicker{display:flex;gap:6px;align-items:center;padding:0 4px}
+.skinDot{width:22px;height:22px;border-radius:50%;border:2px solid #444;cursor:pointer;padding:0}
+.skinDot.activeSkin{border-color:var(--accent);box-shadow:0 0 0 2px #000,0 0 0 3px var(--accent)}
+.windowBtns{display:flex}
+.windowBtns button,.tabs button,.actions button,.button,.start,.mini,.primary,.searchBox a{border:1px solid #444;background:#111;color:#fff;padding:10px 12px;cursor:pointer;text-decoration:none}
+.windowBtns button:first-child{border-radius:9px 0 0 9px}
+.windowBtns button:last-child{border-radius:0 9px 9px 0}
+.windowBtns button.active,.tabs button.active,.start,.primary{background:var(--accent);color:var(--accentText);border-color:var(--accent)}
+.control{margin:18px auto 0;max-width:1400px;padding:15px;border:1px solid var(--line);background:#0b0b0b;display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap}
+.control b{display:block}
+.control span{color:#999;font-size:12px}
+.actions{display:flex;gap:7px;flex-wrap:wrap}
+.actions button,.button{display:flex;align-items:center;gap:7px;border-radius:8px}
+.tabs{max-width:1400px;margin:12px auto;display:flex;gap:6px;flex-wrap:wrap}
+.tabs button{border-radius:8px}
+.status{max-width:1400px;margin:0 auto 14px;padding:10px 12px;border:1px solid #333;background:#0b0b0b;color:#bbb;font-size:12px}
+.snapshot{max-width:1400px;margin:0 auto 14px;border:1px solid var(--line);background:#0b0b0b}
+.snapshotHead{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding:12px 14px;border-bottom:1px solid #222}
+.snapshotHead b{font-size:12px;letter-spacing:1px}
+.snapshotHead span{color:#888;font-size:11px}
+.snapshotGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.snapshotGrid>div{padding:14px;border-right:1px solid #222}
+.snapshotGrid>div:last-child{border-right:none}
+.snapshotGrid label{display:block;font-size:9px;letter-spacing:1px;color:#777;margin-bottom:8px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{width:28px;height:28px;border:1px solid var(--accent);border-radius:6px;display:grid;place-items:center;font-size:11px;font-weight:700}
+.snapshotBig{font-size:15px;font-weight:700}
+.snapshotSub{font-size:11px;color:#999;margin-top:3px}
+@media(max-width:700px){.snapshotGrid{grid-template-columns:1fr 1fr}.snapshotGrid>div{border-right:1px solid #222;border-bottom:1px solid #222}}
+.hero{max-width:1400px;margin:auto;padding:20px;border:1px solid var(--line);background:#0d0d0d;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.hero h2{margin:0 0 6px;font-size:25px}
+.hero p{margin:0;color:#aaa;font-size:13px}
+.start{font-weight:900;border-radius:9px;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.moduleGrid{max-width:1400px;margin:14px auto;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.moduleCard{border:1px solid #333;background:#0b0b0b;border-radius:10px;padding:13px;cursor:pointer}
+.moduleCard.chosen{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.moduleHead{display:grid;grid-template-columns:34px 1fr auto;gap:9px;align-items:center}
+.moduleHead>span{width:30px;height:30px;border:1px solid #666;display:grid;place-items:center;border-radius:7px;font-weight:900}
+.moduleHead b{font-size:13px}
+.moduleHead i{font-style:normal;font-size:9px;border:1px solid #555;padding:4px 6px;border-radius:99px;color:#aaa}
+.moduleCard.chosen .moduleHead i{background:var(--accent);color:var(--accentText)}
+.moduleCard ul{margin:12px 0 0;padding-left:18px;color:#aaa;font-size:11px;line-height:1.7}
+.workflow,.analysis{max-width:1400px;margin:14px auto}
+.workflow{border:1px solid #333;background:#0b0b0b;padding:18px}
+.workflow b{font-size:16px}
+.workflow span{display:block;color:#888;font-size:11px;margin-top:4px}
+.flow{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:14px}
+.flow span{border:1px solid #333;padding:12px 7px;text-align:center;background:#101010;color:#ddd;font-size:10px}
+.sectionTitle{display:flex;align-items:center;gap:9px;border-bottom:1px solid #333;padding:13px 0;margin-bottom:12px;font-weight:900}
+.sectionTitle svg{width:18px}
+.twoCols,.comboCols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.comboCols{grid-template-columns:repeat(3,1fr)}
+.panel{border:1px solid #333;background:#0b0b0b;padding:14px}
+.panel h3{margin:0 0 10px;font-size:13px}
+.rank,.combo{display:grid;grid-template-columns:34px 55px 1fr;gap:8px;align-items:center;border-bottom:1px solid #222;padding:9px 0;font-size:12px}
+.rank strong{font-size:20px}
+.rank span,.combo span{color:#888}
+.combo{grid-template-columns:35px 1fr 35px}
+.combo strong{font-size:13px}
+.ticketGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ticket{border:1px solid #333;background:#0b0b0b;padding:14px}
+.ticket>span{font-size:11px;color:#888}
+.ticket div{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.ticket b{width:42px;height:42px;border:1px solid var(--accent);display:grid;place-items:center;border-radius:8px;background:var(--accent);color:var(--accentText)}
+.empty{padding:30px;border:1px dashed #444;color:#888;text-align:center}
+.analysis textarea{width:100%;min-height:300px;background:#090909;color:#fff;border:1px solid #444;border-radius:9px;padding:14px;outline:none}
+.inputActions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.hint{font-size:11px;color:#888}
+.searchBox{display:flex;gap:8px}
+.searchBox input{flex:1;background:#090909;color:#fff;border:1px solid #444;padding:13px;border-radius:8px}
+.searchBox a{border-radius:8px;display:flex;gap:7px;align-items:center}
+.mini{margin-left:auto;padding:7px 9px;font-size:10px}
+.button input{display:none}
+footer{max-width:1400px;margin:30px auto;padding:25px;text-align:center;color:#666;border-top:1px solid #222;font-size:10px}
+.masterQuick{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
+.masterQuick select{background:#090909;color:#fff;border:1px solid #555;padding:9px;border-radius:7px}
+.masterQuick span{font-size:11px;color:#aaa}
+.masterGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.masterCard{background:#0b0b0b;color:#fff;border:1px solid #333;border-radius:10px;padding:15px;text-align:left;cursor:pointer;min-height:190px}
+.masterCard:hover,.masterCard.activeMaster{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.masterTop{display:flex;justify-content:space-between;align-items:center}
+.masterTop span{font-size:11px;border:1px solid #666;padding:5px 7px;border-radius:6px}
+.masterCard h3{font-size:13px;margin:16px 0 8px}
+.masterCard p{font-size:11px;color:#aaa;line-height:1.5}
+.signalTags{display:flex;gap:4px;flex-wrap:wrap}
+.signalTags span{font-size:8px;border:1px solid #444;padding:4px 5px;border-radius:4px;color:#aaa}
+.masterAction{margin-top:12px;padding:14px;border:1px solid #333;background:#0b0b0b;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.sourcePanel{border:1px solid #333;background:#0b0b0b;padding:16px}
+.sourcePanel label{display:block;font-size:11px;color:#aaa;margin:12px 0}
+.sourcePanel input{display:block;width:100%;margin-top:6px;background:#090909;color:#fff;border:1px solid #444;padding:12px;border-radius:7px}
+.sourcePanel button{border:1px solid #444;background:#111;color:#fff;padding:10px 12px;border-radius:7px;cursor:pointer}
+.success{color:var(--accent);font-size:11px}
+.sourceExamples{margin-top:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sourceExamples button{background:#0b0b0b;color:#fff;border:1px solid #333;padding:10px;text-align:left;border-radius:7px;cursor:pointer}
+.sourceExamples small{display:block;color:#777;font-size:9px;margin-top:5px;overflow:hidden;text-overflow:ellipsis}
+.googlePage{min-height:500px}
+.googleHero{display:flex;align-items:center;gap:15px;padding:28px;border:1px solid #333;background:#0b0b0b}
+.googleMark{font-size:45px;font-weight:900}
+.googleHero h2{margin:0}
+.googleHero p{color:#aaa;font-size:12px}
+.googleSearchPage{display:flex;gap:8px;margin:18px 0}
+.googleSearchPage input{flex:1;background:var(--accent);color:var(--accentText);border:1px solid var(--accent);padding:15px;border-radius:30px}
+.googleSearchPage button{border-radius:30px;display:flex;align-items:center;gap:7px}
+.googleShortcuts{display:flex;gap:8px;flex-wrap:wrap}
+.googleShortcuts button{background:#111;color:#fff;border:1px solid #444;padding:9px 12px;border-radius:20px;cursor:pointer}
+.googleNote{margin-top:20px;border:1px solid #333;padding:15px;color:#999;font-size:11px;line-height:1.6;background:#0b0b0b}
+.gcseWrap{border:1px solid #333;background:#0d0d0d;padding:16px;min-height:200px}
+.gcseSetup{border:1px dashed #444;padding:16px;color:#aaa;font-size:12px;line-height:1.7}
+.gcseSetup label{display:block;font-size:11px;color:#aaa;margin:10px 0 4px}
+.gcseSetup input{display:block;width:100%;background:#090909;color:#fff;border:1px solid #444;padding:11px;border-radius:7px}
+.gcseSetup .inputActions{margin-top:12px}
+.gcse-search-form,.gsc-control-cse{background:transparent!important;border:none!important}
+.gsc-input-box{background:#fff!important}
+@media(max-width:1100px){.masterGrid{grid-template-columns:repeat(2,1fr)}.sourceExamples{grid-template-columns:1fr 1fr}}
+@media(max-width:1000px){.moduleGrid{grid-template-columns:repeat(2,1fr)}.flow{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:700px){.top,.control,.hero{flex-direction:column;align-items:flex-start}.topRight{width:100%;flex-wrap:wrap}.topRight select{width:100%}.moduleGrid,.twoCols,.comboCols,.ticketGrid{grid-template-columns:1fr}.flow{grid-template-columns:repeat(2,1fr)}.searchBox{flex-direction:column}.masterGrid,.sourceExamples{grid-template-columns:1fr}.googleSearchPage{flex-direction:column}}
+
+/* Charts */
+.chartGrid{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+.chartGrid .panel{overflow-x:auto}
+.barChart{width:100%;height:auto}
+.barChart rect{fill:var(--accent)}
+.barChart .axis{stroke:#333}
+.barChart text{fill:#888;font-size:8px}
+.trendChart{width:100%;height:auto}
+.trendChart path.line{fill:none;stroke:var(--accent);stroke-width:2}
+.trendChart circle{fill:var(--accent)}
+.trendChart text{fill:#777;font-size:8px}
+.donutChart{width:100%;height:auto}
+.donutLegend{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;font-size:10px;color:#aaa}
+.donutLegend span{display:inline-flex;align-items:center;gap:5px}
+.donutLegend i{width:9px;height:9px;border-radius:2px;display:inline-block}
+
+/* Backtest */
+.backtestGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.statCard{border:1px solid #333;background:#0b0b0b;padding:16px;text-align:center}
+.statCard b{display:block;font-size:26px}
+.statCard span{display:block;color:#888;font-size:10px;margin-top:6px;letter-spacing:.5px}
+.backtestRows{border:1px solid #333;background:#0b0b0b;max-height:360px;overflow:auto}
+.btRow{display:grid;grid-template-columns:70px 1fr 70px;gap:8px;padding:8px 12px;border-bottom:1px solid #1c1c1c;font-size:11px;align-items:center}
+.btRow b{color:var(--accent)}
+
+/* Export / save tickets */
+.ticket .ticketActions{display:flex;gap:6px;margin-top:10px}
+.ticket .ticketActions button{border:1px solid #444;background:#111;color:#fff;padding:5px 8px;font-size:9px;border-radius:6px;cursor:pointer}
+.savedSets{max-width:1400px;margin:14px auto}
+.savedSetCard{border:1px solid #333;background:#0b0b0b;padding:12px;margin-bottom:8px}
+.savedSetHead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.savedSetHead b{font-size:12px}
+.savedSetHead span{color:#888;font-size:10px}
+
+/* Draw history log */
+.historyRows{border:1px solid #333;background:#0b0b0b}
+.histRow{display:grid;grid-template-columns:130px 90px 100px 1fr 90px;gap:8px;padding:10px 12px;border-bottom:1px solid #1c1c1c;font-size:11px;align-items:center}
+.histRow span{color:#999}
+.histRow button{border:1px solid #444;background:#111;color:#fff;padding:6px 8px;font-size:10px;border-radius:6px;cursor:pointer}
+@media(max-width:900px){.histRow{grid-template-columns:1fr 1fr}}
+
+/* Compare */
+.compareGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.compareCol{border:1px solid #333;background:#0b0b0b;padding:14px}
+.compareCol select{width:100%;background:#090909;color:#fff;border:1px solid #444;padding:9px;border-radius:7px;margin-bottom:10px}
+.compareCol textarea{width:100%;min-height:140px;background:#090909;color:#fff;border:1px solid #444;border-radius:9px;padding:10px;outline:none;font-size:12px}
+.compareTickets{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.compareTickets .mt{display:flex;gap:5px}
+.compareTickets .mt b{width:26px;height:26px;border:1px solid var(--accent);background:var(--accent);color:var(--accentText);border-radius:6px;display:grid;place-items:center;font-size:10px}
+@media(max-width:900px){.chartGrid,.compareGrid,.backtestGrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+// ---------- Google embedded search config ----------
+// Create a free "Programmable Search Engine" at https://programmablesearchengine.google.com/
+// (search the whole web, or just your lottery-result sources), copy its Search Engine ID
+// ("cx" value), and paste it below. Once set here, every visitor gets embedded search with
+// no setup box. Leave blank and users can paste their own ID in the on-page box instead.
+const GOOGLE_CSE_ID = '';
+
+// ---------- Data ----------
+const games=[
+ {id:'3/15',name:'UK 49s 3/15 (15s)',max:15,pick:3,source:'https://49s.co.uk/15s/results',focus:['Pairs','Triplets','Last digits','Transitions']},
+ {id:'4/20',name:'Gosloto 4/20',max:20,pick:4,source:'https://www.stoloto.ru/4x20',focus:['Zones','Pairs','Transitions']},
+ {id:'5/36',name:'Gosloto 5/36',max:36,pick:5,source:'https://www.stoloto.ru/5x36',focus:['Zones','Pairs','Triplets']},
+ {id:'6/45',name:'Gosloto 6/45',max:45,pick:6,source:'https://www.stoloto.ru/6x45',focus:['Gaps','Pairs','Triplets']},
+ {id:'7/49',name:'Gosloto 7/49',max:49,pick:7,source:'https://www.stoloto.ru/7x49',focus:['Zones','Pairs','Triplets']},
+ {id:'rapido-8/20',name:'Rapido 8/20',max:20,pick:8,source:'',focus:['Transitions','Last digits','Zones']},
+ {id:'12/24',name:'12/24',max:24,pick:12,source:'',focus:['Markov','Zones','Roots']},
+ {id:'20/80',name:'20/80 Keno',max:80,pick:20,source:'',focus:['Coverage','Endings','Multiple groups']},
+ {id:'uk-lotto',name:'UK Lotto 6/59',max:59,pick:6,source:'https://www.national-lottery.co.uk/games/lotto',focus:['Frequency','Zones','Pairs']},
+ {id:'euromillions',name:'EuroMillions 5/50',max:50,pick:5,source:'https://www.national-lottery.co.uk/games/euromillions',focus:['Frequency','Pairs','Zones']},
+ {id:'thunderball',name:'Thunderball 5/39',max:39,pick:5,source:'https://www.national-lottery.co.uk/games/thunderball',focus:['Endings','Zones','Gaps']}
+];
+const modules=[
+ ['A','Historical Analysis',['Full-history frequency','Last 100 draws','Last 50 draws','Last 20 draws','Last 12 draws','Last 10 draws','Recent vs long-term','Appearance rate','Gap analysis','Overdue/return','Repeat analysis']],
+ ['B','Mathematical Number Analysis',['Prime numbers','Square numbers','Cube numbers','Triangular numbers','Fibonacci numbers','Twin primes','Composite numbers','Perfect-number relationships','Category overlap','Multi-category numbers']],
+ ['C','Multiple Analysis',['×2 multiples','×3 multiples','×4 multiples','×5 multiples','×6 multiples','×7 multiples','×8 multiples','×9 multiples','×10 multiples','Multiple frequency','Multiple numbers per draw','Multiple overlap']],
+ ['D','Last-Digit Analysis',['Ending 0–9 frequency','Strongest last digit','Weakest last digit','Duplicate last digits','All-different endings','3-ending patterns','4-ending patterns','5-ending patterns','Ending groups','Last-digit transition']],
+ ['E','Balance Analysis',['Odd/even','Odd/even transition','Low/high','Low/high transition','Number-range balance','Consecutive numbers','Number spacing','Sum of numbers','Average number','Minimum/maximum','Range width']],
+ ['F','Zone Analysis',['Zone distribution','Zone frequency','Zone overlap','Zone transition','Zone rotation','Underrepresented zones','Overrepresented zones']],
+ ['G','Relationship Analysis',['Pair frequency','Strong pairs','Weak pairs','Triplet frequency','Strong triplets','Quadruplets','Pair overlap','Triplet overlap','Pair-to-next-draw transition','Triplet-to-next-draw transition']],
+ ['H','Draw-Transition Analysis',['Number retention','Number replacement','Repeated numbers','New numbers','Number-to-number transition','Last-digit transition','Multiple transition','Prime transition','Zone transition','Odd/even transition']],
+ ['I','Pool System',['Master Pool','Core Pool','Strong Pool','Alternative Pool','Reserve Pool','Pool overlap','Pool rotation','Pool intersection','Pool elimination','Pool coverage']],
+ ['J','Combination Analysis',['Ticket balance','Core + rotation','Primary combinations','Alternative combinations','Reserve combinations','3-number combinations','4-number combinations','5-number combinations','7-number combinations','Keno selection combos']],
+ ['K','Master Scoring',['Frequency score 25%','Multiple score 15%','Mathematical score 10%','Last-digit score 10%','Zone score 10%','Pair score 8%','Triplet score 5%','Transition score 7%','Balance score 10%']],
+ ['L','Validation',['Historical backtest','Walk-forward testing','Pool hit rate','Number hit rate','Ending-pattern hit rate','Multiple-pattern hit rate','Pair hit rate','Triplet hit rate','Average matches','Best/worst performance']]
+];
+const masterModes=[
+ {id:'statistical',name:'MASTER 1 — STATISTICAL',desc:'Frequency, recency, gaps, hot/cold, sums and historical distribution.',signals:['A','E','K','L']},
+ {id:'markov',name:'MASTER 2 — TRANSITION / MARKOV',desc:'Draw-to-draw movement, retention, replacement, transitions and zone movement.',signals:['A','F','H','K','L']},
+ {id:'structural',name:'MASTER 3 — STRUCTURE / BALANCE',desc:'Zones, sections, odd/even, low/high, spacing, endings and mathematical groups.',signals:['B','C','D','E','F','K']},
+ {id:'relationship',name:'MASTER 4 — PAIR / TRIPLET / WHEEL',desc:'Pairs, triplets, quadruples, overlap, pools and controlled combinations.',signals:['G','I','J','K']},
+ {id:'consensus',name:'MASTER 5 — FULL CONSENSUS',desc:'Combines the four specialist masters and diversifies the final candidate pool.',signals:['A','B','C','D','E','F','G','H','I','J','K','L']}
+];
+
+// ---------- Helpers ----------
+function parseDraws(text,max,pick){
+ const lines=text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean); const draws=[];
+ for(const line of lines){
+  const nums=(line.match(/\d+/g)||[]).map(Number).filter(n=>n>=1&&n<=max);
+  const unique=[...new Set(nums)]; if(unique.length>=pick) draws.push(unique.slice(0,pick).sort((a,b)=>a-b));
+ }
+ if(draws.length) return draws;
+ const nums=(text.match(/\d+/g)||[]).map(Number).filter(n=>n>=1&&n<=max);
+ for(let i=0;i+pick<=nums.length;i+=pick){const u=[...new Set(nums.slice(i,i+pick))];if(u.length===pick)draws.push(u.sort((a,b)=>a-b));}
+ return draws;
+}
+function combinations(arr,k){const out=[]; const walk=(s,c,d)=>{if(d===0){out.push([...c]);return;}for(let i=s;i<=arr.length-d;i++)walk(i+1,[...c,arr[i]],d-1)};walk(0,[],k);return out;}
+function zone(n,max){return Math.min(5,Math.floor((n-1)/(max/5))+1)}
+function weightedScore(n,draws){const f=draws.filter(d=>d.includes(n)).length; const recent=draws.slice(0,Math.min(10,draws.length)).filter(d=>d.includes(n)).length; const gap=draws.findIndex(d=>d.includes(n)); return f*2+recent*4+(gap<0?0:Math.max(0,10-gap));}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+// ---------- State ----------
+let state={
+ gameId:'3/15', windowSize:50, raw:'', draws:[], active:'dashboard',
+ selected:['A','B','C','D','E','F','G','H','I','J','K','L'], tickets:[],
+ sourceStatus:'', busy:false, master:'consensus', sourceName:'', sourceUrl:'',
+ skin:'mono',
+ lastFetched:'', googleQuery:'',
+ backtest:null, backtestBusy:false,
+ loadLog:[], savedSets:[],
+ cmpGameId:'7/49', cmpRaw:'', cmpDraws:[], cmpMaster:'consensus', cmpTickets:[], cmpStatus:''
+};
+(function initSource(){const g=games.find(g=>g.id===state.gameId);state.sourceUrl=g.source;state.sourceName=g.name+' results source';})();
+
+// ---------- Actions (exposed on window) ----------
+function setGame(id){state.gameId=id;const g=games.find(x=>x.id===id);state.sourceUrl=g.source;state.sourceName=g.name+' results source';render();}
+function setWindow(w){state.windowSize=w;render();}
+function setActive(tab){state.active=tab;render();}
+function setMaster(id){state.master=id;render();}
+function setSkin(id){state.skin=id;document.documentElement.setAttribute('data-skin',id==='mono'?'':id);render();}
+function toggleModule(id){state.selected=state.selected.includes(id)?state.selected.filter(x=>x!==id):[...state.selected,id];render();}
+function bindRaw(v){state.raw=v;}
+function bindSourceUrl(v){state.sourceUrl=v;}
+function bindSourceName(v){state.sourceName=v;}
+function bindGoogleQuery(v){state.googleQuery=v;}
+function useGameSource(){const g=games.find(x=>x.id===state.gameId);state.sourceUrl=g.source;state.sourceName=g.name+' results source';render();}
+function pickSource(gid){const g=games.find(x=>x.id===gid);state.sourceUrl=g.source;state.sourceName=g.name+' results source';render();}
+
+function computeZoneDist(current,max){
+ const zones=[0,0,0,0,0];
+ current.forEach(d=>d.forEach(n=>{zones[zone(n,max)-1]++}));
+ return zones;
+}
+
+function pushLog(source,g,parsedCount){
+ state.loadLog.unshift({time:new Date().toLocaleString(),game:g.name,count:parsedCount,source:source,raw:state.raw});
+ if(state.loadLog.length>15) state.loadLog.length=15;
+}
+
+function loadText(text,source){
+ const g=games.find(x=>x.id===state.gameId);
+ const parsed=parseDraws(text,g.max,g.pick);
+ state.raw=text; state.draws=parsed;
+ state.sourceStatus=parsed.length?('Loaded '+parsed.length+' draws.'):'No valid draws detected. Check the format.';
+ if(parsed.length) pushLog(source||'Paste',g,parsed.length);
+}
+function analyzePasted(){loadText(state.raw,'Paste');render();}
+function analyzePastedAndGo(){loadText(state.raw,'Paste');state.active='dashboard';render();}
+
+function reloadLogEntry(i){
+ const entry=state.loadLog[i]; if(!entry) return;
+ const g=games.find(x=>x.id===state.gameId);
+ const parsed=parseDraws(entry.raw,g.max,g.pick);
+ state.raw=entry.raw; state.draws=parsed;
+ state.sourceStatus='Reloaded '+parsed.length+' draws from '+entry.time+'.';
+ state.active='dashboard'; render();
+}
+
+async function onFile(input){
+ const f=input.files&&input.files[0]; if(!f) return;
+ if(f.name.toLowerCase().endsWith('.pdf')){
+  state.sourceStatus='PDF extraction needs a server and is not available in this standalone build. Please open the PDF, copy the results text, and use PASTE RESULTS instead.';
+  render(); return;
+ }
+ const text=await f.text();
+ loadText(text,'File import ('+f.name+')'); render();
+}
+
+async function liveLoad(){
+ if(!state.sourceUrl){state.sourceStatus='Enter a results website URL first.';state.active='source';render();return;}
+ state.busy=true; state.sourceStatus='Fetching '+state.sourceName+'…'; render();
+ try{
+  const res=await fetch(state.sourceUrl,{cache:'no-store'});
+  if(!res.ok) throw new Error('Source returned HTTP '+res.status);
+  const html=await res.text();
+  const rows=[]; const trMatches=html.match(/<tr[\s\S]*?<\/tr>/gi)||[];
+  for(const tr of trMatches){
+   const cells=tr.match(/<t[dh][^>]*>[\s\S]*?<\/t[dh]>/gi)||[];
+   const text=cells.map(c=>c.replace(/<[^>]+>/g,' ').replace(/&nbsp;/gi,' ').replace(/&amp;/gi,'&').replace(/\s+/g,' ').trim()).join(' ');
+   if(text) rows.push(text);
+  }
+  const stripped=html.replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,'\n').replace(/&nbsp;/gi,' ').replace(/&amp;/gi,'&');
+  const text=[...rows,stripped].join('\n').slice(0,1000000);
+  state.lastFetched=new Date().toLocaleString();
+  loadText(text,'Live fetch');
+  state.sourceStatus='Fetched data from '+state.sourceName+'. Review the parsed draws before generating.';
+ }catch(e){
+  state.sourceStatus='This browser could not fetch that site directly (most results sites block cross-origin requests). Open RESULTS WEBSITE or GOOGLE SEARCH to view it, then copy the draws into PASTE RESULTS.';
+ }finally{
+  state.busy=false; render();
+ }
+}
+
+function computeCurrent(){const g=games.find(x=>x.id===state.gameId);return state.draws.slice(0,state.windowSize);}
+function computeFreq(current,max){
+ return Array.from({length:max},(_,i)=>{const n=i+1;return {n,count:current.filter(d=>d.includes(n)).length,score:weightedScore(n,current),gap:current.findIndex(d=>d.includes(n))}});
+}
+function computeCombo(current,k){
+ const m=new Map();
+ current.forEach(d=>{if(d.length>=k) combinations(d,k).forEach(c=>{const key=c.join('-');m.set(key,(m.get(key)||0)+1)})});
+ return [...m.entries()].map(([key,count])=>({key,count})).sort((a,b)=>b.count-a.count).slice(0,20);
+}
+
+function poolForMode(modeId,freq,current,pairStats,g){
+ const base=[...freq].sort((a,b)=>b.score-a.score);
+ if(modeId==='statistical') return base;
+ if(modeId==='markov') return [...base].sort((a,b)=>{
+   const ar=current.slice(0,Math.min(10,current.length)).filter(d=>d.includes(a.n)).length;
+   const br=current.slice(0,Math.min(10,current.length)).filter(d=>d.includes(b.n)).length;
+   return (br-b.count)-(ar-a.count);
+  });
+ if(modeId==='structural') return [...base].sort((a,b)=>{
+   const za=zone(a.n,g.max),zb=zone(b.n,g.max); return (zb%2)-(za%2)||b.score-a.score;
+  });
+ if(modeId==='relationship') return [...base].sort((a,b)=>{
+   const pa=pairStats.reduce((s,p)=>s+(p.key.split('-').includes(String(a.n))?p.count:0),0);
+   const pb=pairStats.reduce((s,p)=>s+(p.key.split('-').includes(String(b.n))?p.count:0),0);
+   return pb-pa;
+  });
+ return base;
+}
+function ticketsFromPool(pool,g,count){
+ const out=[]; let tries=0;
+ while(out.length<count&&tries<3000){
+  tries++;
+  const t=[...pool].sort(()=>Math.random()-.5).slice(0,g.pick).sort((a,b)=>a-b);
+  if(t.length!==g.pick) continue;
+  const key=t.join('-'); if(out.some(x=>x.join('-')===key)) continue;
+  const odds=t.filter(n=>n%2).length; const zs=new Set(t.map(n=>zone(n,g.max))).size;
+  if(odds===0||odds===g.pick) continue;
+  if(g.pick>=4&&zs<2) continue;
+  out.push(t);
+ }
+ return out;
+}
+
+function generate(){
+ const g=games.find(x=>x.id===state.gameId);
+ const current=computeCurrent();
+ if(!current.length){state.sourceStatus='Load results first.';render();return;}
+ const freq=computeFreq(current,g.max);
+ const pairStats=computeCombo(current,2);
+ const mode=masterModes.find(m=>m.id===state.master);
+ const poolSize=Math.max(g.pick*3,15);
+ const pool=poolForMode(mode.id,freq,current,pairStats,g).slice(0,poolSize).map(x=>x.n);
+ state.tickets=ticketsFromPool(pool,g,12);
+ state.active='generator'; state.sourceStatus=mode.name+' generated '+state.tickets.length+' diversified candidate tickets.';
+ render();
+}
+
+// ---------- Backtesting (Module L) ----------
+function runBacktest(){
+ const g=games.find(x=>x.id===state.gameId);
+ const all=state.draws;
+ const trainSize=state.windowSize;
+ const minTrain=Math.max(g.pick*2,10);
+ const maxTests=200;
+ if(all.length<minTrain+5){state.sourceStatus='Load more draws first — need at least '+(minTrain+5)+' for a meaningful backtest.';render();return;}
+ const mode=masterModes.find(m=>m.id===state.master);
+ const poolSize=Math.max(g.pick*3,15);
+ const rows=[]; let testCount=0;
+ for(let i=0;i<all.length-minTrain&&testCount<maxTests;i++){
+  const train=all.slice(i+1,i+1+trainSize);
+  if(train.length<minTrain) break;
+  const freq=computeFreq(train,g.max);
+  const pairStats=computeCombo(train,2);
+  const pool=poolForMode(mode.id,freq,train,pairStats,g).slice(0,poolSize).map(x=>x.n);
+  const actual=all[i];
+  const matches=actual.filter(n=>pool.includes(n)).length;
+  rows.push({drawIndex:i,matches,poolSize:pool.length,pick:g.pick});
+  testCount++;
+ }
+ if(!rows.length){state.sourceStatus='Not enough historical draws to backtest yet.';render();return;}
+ const matchesArr=rows.map(r=>r.matches);
+ const avg=(matchesArr.reduce((a,b)=>a+b,0)/matchesArr.length);
+ const best=Math.max(...matchesArr);
+ const worst=Math.min(...matchesArr);
+ const hitRate=(matchesArr.filter(m=>m>0).length/matchesArr.length*100);
+ state.backtest={mode:mode.name,count:rows.length,avg:avg.toFixed(2),best,worst,hitRate:hitRate.toFixed(1),rows,pick:g.pick};
+ state.active='backtest';
+ state.sourceStatus='Backtested '+rows.length+' historical draws with '+mode.name+'.';
+ render();
+}
+
+// ---------- Ticket export / save ----------
+function ticketText(t){return t.join(', ');}
+function copyTicket(i){
+ const t=state.tickets[i]; if(!t) return;
+ navigator.clipboard && navigator.clipboard.writeText(ticketText(t)).catch(()=>{});
+}
+function downloadCSV(){
+ if(!state.tickets.length) return;
+ const g=games.find(x=>x.id===state.gameId);
+ let csv='Ticket,'+Array.from({length:g.pick},(_,i)=>'Number'+(i+1)).join(',')+'\n';
+ state.tickets.forEach((t,i)=>{csv+=(i+1)+','+t.join(',')+'\n';});
+ const blob=new Blob([csv],{type:'text/csv'});
+ const a=document.createElement('a');
+ a.href=URL.createObjectURL(blob);
+ a.download='lottolab-tickets-'+g.id.replace('/','x')+'.csv';
+ document.body.appendChild(a); a.click(); a.remove();
+}
+function printTickets(){
+ if(!state.tickets.length) return;
+ const g=games.find(x=>x.id===state.gameId);
+ const mode=masterModes.find(m=>m.id===state.master);
+ const w=window.open('','_blank'); if(!w) return;
+ const rows=state.tickets.map((t,i)=>'<div style="border:1px solid #999;padding:10px 14px;margin:6px 0;font-size:16px;letter-spacing:2px">Ticket '+(i+1)+':&nbsp; <b>'+t.join('  ')+'</b></div>').join('');
+ w.document.write('<html><head><title>LottoLab tickets — '+esc(g.name)+'</title></head><body style="font-family:Arial,sans-serif;padding:20px"><h2>LottoLab — '+esc(g.name)+'</h2><p>'+esc(mode.name)+' • generated '+new Date().toLocaleString()+'</p>'+rows+'<p style="color:#888;font-size:11px;margin-top:20px">Analysis and pattern study only. Lottery outcomes are random.</p></body></html>');
+ w.document.close(); w.focus(); w.print();
+}
+function saveTicketSet(){
+ if(!state.tickets.length) return;
+ const g=games.find(x=>x.id===state.gameId);
+ const mode=masterModes.find(m=>m.id===state.master);
+ state.savedSets.unshift({time:new Date().toLocaleString(),game:g.name,mode:mode.name,tickets:state.tickets.map(t=>[...t])});
+ if(state.savedSets.length>10) state.savedSets.length=10;
+ state.sourceStatus='Saved this ticket set for the rest of the session.';
+ render();
+}
+function deleteSavedSet(i){state.savedSets.splice(i,1);render();}
+
+// ---------- Compare mode ----------
+function cmpSetGame(id){state.cmpGameId=id;render();}
+function bindCmpRaw(v){state.cmpRaw=v;}
+function cmpAnalyze(){
+ const g=games.find(x=>x.id===state.cmpGameId);
+ state.cmpDraws=parseDraws(state.cmpRaw,g.max,g.pick);
+ state.cmpStatus=state.cmpDraws.length?('Loaded '+state.cmpDraws.length+' draws.'):'No valid draws detected.';
+ render();
+}
+function cmpSetMaster(id){state.cmpMaster=id;render();}
+function cmpGenerate(){
+ const g=games.find(x=>x.id===state.cmpGameId);
+ if(!state.cmpDraws.length){state.cmpStatus='Load results for this game first.';render();return;}
+ const current=state.cmpDraws.slice(0,state.windowSize);
+ const freq=computeFreq(current,g.max);
+ const pairStats=computeCombo(current,2);
+ const poolSize=Math.max(g.pick*3,15);
+ const pool=poolForMode(state.cmpMaster,freq,current,pairStats,g).slice(0,poolSize).map(x=>x.n);
+ state.cmpTickets=ticketsFromPool(pool,g,6);
+ state.cmpStatus='Generated '+state.cmpTickets.length+' tickets.';
+ render();
+}
+
+function selectMaster(id){const mode=masterModes.find(m=>m.id===id);state.master=id;state.selected=mode.signals;render();}
+
+function googleSearch(){window.open('https://www.google.com/search?q='+encodeURIComponent(state.googleQuery||games.find(x=>x.id===state.gameId).name+' latest results'),'_blank');}
+function googleSearchEnter(ev){if(ev.key==='Enter') googleSearch();}
+function setGoogleShortcut(q){state.googleQuery=q;render();document.getElementById('googleInput')&&document.getElementById('googleInput').focus();}
+
+// ---------- Embedded Google search (Programmable Search Engine) ----------
+// Google will not let another site load plain google.com/search in an iframe (X-Frame-Options),
+// so a real "stay on this page" Google search has to use Google's own embeddable widget
+// (Programmable Search Engine). We keep the widget's DOM node detached from the normal
+// render() cycle and just move it in/out of the page, so it survives every re-render.
+let liveCseId = GOOGLE_CSE_ID;
+let cseScriptLoadedFor = null;
+let cseWidgetEl = null;
+let cseRendered = false;
+
+function bindCseId(v){liveCseId=v;}
+
+function activateCse(){
+ if(!liveCseId){state.sourceStatus='Paste a Search Engine ID first.';render();return;}
+ render();
+}
+
+function loadCseScript(cx){
+ return new Promise((resolve,reject)=>{
+  if(cseScriptLoadedFor===cx){resolve();return;}
+  window.__gcse={parsetags:'explicit'};
+  const s=document.createElement('script');
+  s.src='https://cse.google.com/cse.js?cx='+encodeURIComponent(cx);
+  s.async=true;
+  s.onload=()=>{cseScriptLoadedFor=cx;resolve();};
+  s.onerror=()=>reject(new Error('Could not load Google Search widget script.'));
+  document.head.appendChild(s);
+ });
+}
+
+async function mountGoogleSearch(){
+ const slot=document.getElementById('googleSlot');
+ if(!slot) return;
+ if(!liveCseId){
+  slot.innerHTML='';
+  return;
+ }
+ try{
+  await loadCseScript(liveCseId);
+  if(!cseWidgetEl){
+   cseWidgetEl=document.createElement('div');
+   cseWidgetEl.id='gcseFixedTarget';
+  }
+  slot.innerHTML='';
+  slot.appendChild(cseWidgetEl);
+  if(!cseRendered && window.google && google.search && google.search.cse && google.search.cse.element){
+   google.search.cse.element.render({div:'gcseFixedTarget', tag:'search'});
+   cseRendered=true;
+  }
+ }catch(e){
+  slot.innerHTML='<p class="hint">Could not load the embedded search widget. Check the Search Engine ID, or use the OPEN IN NEW TAB option below.</p>';
+ }
+}
+
+// ---------- Rendering ----------
+function iconRefresh(){return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>';}
+function iconLink(){return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>';}
+function iconUpload(){return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>';}
+function iconDb(){return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>';}
+function iconWand(){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 4V2M15 16v-2M8 9h2M20 9h2M17.8 11.8L19 13M15 9h0M17.8 6.2L19 5M3 21l9-9M12.2 6.2L11 5"/></svg>';}
+function iconSliders(){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/></svg>';}
+function iconTrophy(){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M5 4H3a2 2 0 0 0 0 4h2M19 4h2a2 2 0 0 1 0 4h-2"/></svg>';}
+function iconTarget(){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>';}
+function iconSparkles(){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/></svg>';}
+function iconFileUp(){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6M9.5 14.5L12 12l2.5 2.5"/></svg>';}
+function iconSearch(){return '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';}
+function iconCheck(){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';}
+function iconChart(){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>';}
+function iconFlask(){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2v6L3 20a1 1 0 0 0 1 2h16a1 1 0 0 0 1-2L15 8V2"/><line x1="8.5" y1="14" x2="15.5" y2="14"/></svg>';}
+function iconClock(){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';}
+function iconLayers(){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>';}
+function iconDownload(){return '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';}
+
+function render(){
+ const g=games.find(x=>x.id===state.gameId);
+ const current=computeCurrent();
+ const freq=computeFreq(current,g.max);
+ const hot=[...freq].sort((a,b)=>b.score-a.score).slice(0,10);
+ const cold=[...freq].sort((a,b)=>a.count-b.count||b.gap-a.gap).slice(0,10);
+ const pairStats=computeCombo(current,2);
+ const triStats=computeCombo(current,3);
+ const quadStats=computeCombo(current,4);
+
+ let html='';
+ html+='<main class="shell">';
+ html+='<header class="top"><div class="brand"><div class="logo">LL</div><div><h1>LOTTO LAB MASTER SYSTEM</h1><p>COMPLETE ANALYSIS DASHBOARD</p></div></div>';
+ html+='<div class="topRight">';
+ html+='<select onchange="setGame(this.value)">'+games.map(x=>'<option value="'+x.id+'"'+(x.id===state.gameId?' selected':'')+'>'+esc(x.name)+'</option>').join('')+'</select>';
+ html+='<div class="windowBtns">'+[20,50,100].map(w=>'<button class="'+(state.windowSize===w?'active':'')+'" onclick="setWindow('+w+')">'+w+'</button>').join('')+'</div>';
+ const skins=[['mono','#ffffff'],['emerald','#22e07a'],['gold','#f5c451'],['azure','#3fa9ff'],['crimson','#ff4d5e']];
+ html+='<div class="skinPicker">'+skins.map(([id,color])=>'<button class="skinDot'+(state.skin===id?' activeSkin':'')+'" style="background:'+color+'" title="'+id.charAt(0).toUpperCase()+id.slice(1)+' skin" onclick="setSkin(\''+id+'\')"></button>').join('')+'</div>';
+ html+='</div></header>';
+
+ html+='<section class="control"><div><b>RESULTS INPUT</b><span>'+current.length+' usable draws • '+g.pick+' numbers from 1–'+g.max+'</span></div>';
+ html+='<div class="actions">';
+ html+='<button onclick="liveLoad()" '+(state.busy?'disabled':'')+'>'+iconRefresh()+' '+(state.busy?'LOADING…':'LOAD REAL RESULTS')+'</button>';
+ html+='<button onclick="setActive(\'source\')">'+iconLink()+' RESULTS WEBSITE</button>';
+ html+='<label class="button">'+iconUpload()+' PASTE / IMPORT<input hidden type="file" accept=".txt,.csv,.pdf" onchange="onFile(this)"/></label>';
+ html+='<button onclick="setActive(\'paste\')">'+iconDb()+' PASTE RESULTS</button>';
+ html+='</div></section>';
+
+ const tabs=[['dashboard','DASHBOARD'],['masters','5 MASTER ANALYZERS'],['generator','LOTTO GENERATOR'],['numbers','BEST NUMBERS'],['combos','PAIRS / TRIPLETS / QUADS'],['charts','CHARTS'],['backtest','BACKTEST'],['compare','COMPARE GAMES'],['history','DRAW HISTORY'],['source','RESULT WEBSITE'],['input','DATA / PDF'],['google','GOOGLE SEARCH']];
+ html+='<nav class="tabs">'+tabs.map(([id,label])=>'<button class="'+(state.active===id?'active':'')+'" onclick="setActive(\''+id+'\')">'+label+'</button>').join('')+'</nav>';
+
+ html+='<section class="status">'+esc(state.sourceStatus||'Choose an analysis module below, load real results, or paste/import your own results.')+'</section>';
+
+ // ---- Always-visible analysis snapshot ----
+ const topPair=pairStats[0];
+ const masterName=(masterModes.find(m=>m.id===state.master)||{}).name||'';
+ html+='<section class="snapshot"><div class="snapshotHead"><b>ANALYSIS SNAPSHOT</b><span>'+current.length+' draws in window • '+esc(masterName)+'</span></div>';
+ html+='<div class="snapshotGrid">';
+ html+='<div><label>TOP 5 HOT</label><div class="chips">'+(hot.length?hot.slice(0,5).map(x=>'<span class="chip">'+x.n+'</span>').join(''):'<span class="snapshotSub">—</span>')+'</div></div>';
+ html+='<div><label>TOP 5 COLD</label><div class="chips">'+(cold.length?cold.slice(0,5).map(x=>'<span class="chip">'+x.n+'</span>').join(''):'<span class="snapshotSub">—</span>')+'</div></div>';
+ html+='<div><label>TOP PAIR</label><div class="snapshotBig">'+(topPair?esc(topPair.key):'—')+'</div><div class="snapshotSub">'+(topPair?topPair.count+'× together':'load draws to see pairs')+'</div></div>';
+ html+='<div><label>LAST GENERATED</label><div class="snapshotBig">'+state.tickets.length+' tickets</div><div class="snapshotSub">'+(state.tickets.length?'via '+esc(masterName):'not generated yet')+'</div></div>';
+ html+='</div></section>';
+
+ if(state.active==='dashboard'){
+  html+='<section class="hero"><div><h2>CHOOSE HOW TO ANALYZE</h2><p>Select one of the five master analyzers, or use the module cards for custom analysis. The generator uses the selected historical window and loaded results.</p>';
+  html+='<div class="masterQuick"><select onchange="setMaster(this.value)">'+masterModes.map(m=>'<option value="'+m.id+'"'+(m.id===state.master?' selected':'')+'>'+esc(m.name)+'</option>').join('')+'</select><span>'+esc((masterModes.find(m=>m.id===state.master)||{}).desc||'')+'</span></div></div>';
+  html+='<button class="start" onclick="generate()">'+iconWand()+' START LOTTO GENERATOR</button></section>';
+  html+='<div class="moduleGrid">'+modules.map(([id,title,items])=>{
+    const chosen=state.selected.includes(id);
+    return '<article class="moduleCard '+(chosen?'chosen':'')+'" onclick="toggleModule(\''+id+'\')"><div class="moduleHead"><span>'+id+'</span><b>'+esc(title)+'</b><i>'+(chosen?'ON':'OFF')+'</i></div><ul>'+items.slice(0,8).map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></article>';
+  }).join('')+'</div>';
+  html+='<section class="workflow"><div><b>MASTER SYSTEM WORKFLOW</b><span>RAW RESULTS → SELECTED ANALYSIS → SCORES → POOLS → GENERATOR → VALIDATION</span></div><div class="flow">'+['RAW RESULTS','FREQUENCY','MATH TYPES','MULTIPLES','LAST DIGITS','BALANCE','ZONES','PAIRS & TRIPLETS','TRANSITIONS','POOLS','MASTER SCORE','CANDIDATE TICKETS','BACKTEST'].map(x=>'<span>'+x+'</span>').join('')+'</div></section>';
+ }
+
+ if(state.active==='masters'){
+  html+='<section class="analysis"><div class="sectionTitle">'+iconSliders()+' CHOOSE ONE OF 5 MASTER ANALYZERS</div><div class="masterGrid">';
+  html+=masterModes.map((m,i)=>'<button class="masterCard '+(state.master===m.id?'activeMaster':'')+'" onclick="selectMaster(\''+m.id+'\')"><div class="masterTop"><span>0'+(i+1)+'</span>'+(state.master===m.id?iconCheck():'')+'</div><h3>'+esc(m.name)+'</h3><p>'+esc(m.desc)+'</p><div class="signalTags">'+m.signals.map(s=>'<span>MODULE '+s+'</span>').join('')+'</div></button>').join('');
+  html+='</div><div class="masterAction"><b>Selected:</b> '+esc((masterModes.find(m=>m.id===state.master)||{}).name||'')+'<button class="primary" onclick="generate()">START THIS MASTER</button></div></section>';
+ }
+
+ if(state.active==='numbers'){
+  html+='<section class="analysis"><div class="sectionTitle">'+iconTrophy()+' 10 HOT + 10 COLD + BEST NUMBERS</div><div class="twoCols">';
+  html+='<div class="panel"><h3>HOT NUMBERS</h3>'+hot.map((x,i)=>'<div class="rank"><b>'+(i+1)+'</b><strong>'+x.n+'</strong><span>'+x.count+' appearances • score '+x.score+'</span></div>').join('')+'</div>';
+  html+='<div class="panel"><h3>COLD NUMBERS</h3>'+cold.map((x,i)=>'<div class="rank"><b>'+(i+1)+'</b><strong>'+x.n+'</strong><span>'+x.count+' appearances • gap '+(x.gap<0?'—':x.gap+' draws')+'</span></div>').join('')+'</div>';
+  html+='</div></section>';
+ }
+
+ if(state.active==='combos'){
+  html+='<section class="analysis"><div class="sectionTitle">'+iconTarget()+' COMBINATION ANALYSIS</div><div class="comboCols">';
+  [['PAIRS',pairStats],['TRIPLETS',triStats],['QUADRUPLES',quadStats]].forEach(([title,list])=>{
+   html+='<div class="panel"><h3>'+title+'</h3>'+list.map((x,i)=>'<div class="combo"><b>#'+(i+1)+'</b><strong>'+esc(x.key)+'</strong><span>'+x.count+'×</span></div>').join('')+(list.length?'':'<div class="hint">Not enough draws yet.</div>')+'</div>';
+  });
+  html+='</div></section>';
+ }
+
+ if(state.active==='generator'){
+  html+='<section class="analysis"><div class="sectionTitle">'+iconSparkles()+' GENERATED LOTTO TICKETS <button class="mini" onclick="generate()">GENERATE AGAIN</button></div>';
+  if(state.tickets.length){
+   html+='<div class="inputActions" style="margin-bottom:12px"><button onclick="downloadCSV()">'+iconDownload()+' DOWNLOAD CSV</button><button onclick="printTickets()">'+iconFileUp()+' PRINT / SAVE PDF</button><button onclick="saveTicketSet()">'+iconLayers()+' SAVE THIS SET</button></div>';
+   html+='<div class="ticketGrid">'+state.tickets.map((t,i)=>'<div class="ticket"><span>Ticket '+(i+1)+'</span><div>'+t.map(n=>'<b>'+n+'</b>').join('')+'</div><div class="ticketActions"><button onclick="copyTicket('+i+')">COPY</button></div></div>').join('')+'</div>';
+  }else{
+   html+='<div class="empty">Load results and press START LOTTO GENERATOR.</div>';
+  }
+  if(state.savedSets.length){
+   html+='<div class="savedSets"><div class="sectionTitle" style="border-top:1px solid #333;margin-top:20px;padding-top:20px">'+iconLayers()+' SAVED TICKET SETS (this session)</div>';
+   html+=state.savedSets.map((s,i)=>'<div class="savedSetCard"><div class="savedSetHead"><b>'+esc(s.game)+' • '+esc(s.mode)+'</b><span>'+esc(s.time)+'</span><button class="mini" onclick="deleteSavedSet('+i+')">REMOVE</button></div><div class="ticketGrid" style="margin-top:10px">'+s.tickets.map((t,j)=>'<div class="ticket"><span>Ticket '+(j+1)+'</span><div>'+t.map(n=>'<b>'+n+'</b>').join('')+'</div></div>').join('')+'</div></div>').join('')+'</div>';
+  }
+  html+='</section>';
+ }
+
+ if(state.active==='source'){
+  html+='<section class="analysis"><div class="sectionTitle">'+iconLink()+' RESULTS WEBSITE / FETCH SOURCE</div><div class="sourcePanel"><h3>PUT A WEBSITE HERE</h3><p class="hint">Enter any public results webpage. LottoLab will try to fetch the page in your browser and extract readable table/text data. Many results sites block cross-origin requests from other sites — if that happens, open the site link, copy the results, and use PASTE RESULTS.</p>';
+  html+='<label>Website name<input value="'+esc(state.sourceName)+'" oninput="bindSourceName(this.value)" placeholder="e.g. 49s 15s Results"/></label>';
+  html+='<label>Results URL<input value="'+esc(state.sourceUrl)+'" oninput="bindSourceUrl(this.value)" placeholder="https://example.com/results"/></label>';
+  html+='<div class="inputActions"><button class="primary" onclick="liveLoad()" '+(state.busy?'disabled':'')+'>'+iconRefresh()+' '+(state.busy?'FETCHING…':'FETCH & ANALYZE RESULTS')+'</button>';
+  html+='<button onclick="useGameSource()">USE GAME SOURCE</button>';
+  if(state.sourceUrl){html+='<a class="button" style="text-decoration:none" href="'+esc(state.sourceUrl)+'" target="_blank" rel="noopener">'+iconLink()+' OPEN SITE</a>';}
+  html+='</div>';
+  if(state.lastFetched) html+='<p class="success">Last fetched: '+esc(state.lastFetched)+'</p>';
+  html+='</div>';
+  html+='<div class="sourceExamples"><b style="grid-column:1/-1">Configured sources</b>'+games.filter(x=>x.source).map(x=>'<button onclick="pickSource(\''+x.id+'\')">'+esc(x.name)+'<small>'+esc(x.source)+'</small></button>').join('')+'</div>';
+  html+='</section>';
+ }
+
+ if(state.active==='input'){
+  html+='<section class="analysis"><div class="sectionTitle">'+iconFileUp()+' LOAD / PASTE RESULTS</div>';
+  html+='<textarea oninput="bindRaw(this.value)" placeholder="Paste historical results here, one draw per line. Example for '+esc(g.name)+':\n1 4 7\n2 8 11\n3 6 15">'+esc(state.raw)+'</textarea>';
+  html+='<div class="inputActions"><button class="primary" onclick="analyzePasted()">ANALYZE PASTED RESULTS</button>';
+  html+='<label class="button">'+iconFileUp()+' IMPORT TXT/CSV<input hidden type="file" accept=".txt,.csv,.pdf" onchange="onFile(this)"/></label></div>';
+  html+='<p class="hint">Paste rows of numbers (one draw per line) or import a .txt/.csv export. PDF results need to be opened and copy-pasted here — this standalone build has no server to parse PDFs.</p>';
+  html+='</section>';
+ }
+
+ if(state.active==='paste'){
+  html+='<section class="analysis"><div class="sectionTitle">PASTE RESULTS</div>';
+  html+='<textarea oninput="bindRaw(this.value)" placeholder="Paste results from 49s, Gosloto, Google or another results platform…">'+esc(state.raw)+'</textarea>';
+  html+='<button class="primary" onclick="analyzePastedAndGo()" style="margin-top:10px">LOAD & ANALYZE</button>';
+  html+='</section>';
+ }
+
+ if(state.active==='google'){
+  html+='<section class="analysis googlePage"><div class="googleHero"><div class="googleMark">G</div><div><h2>GOOGLE SEARCH</h2><p>Search the web for lottery results, historical draws and research — results load right here, you never leave this page.</p></div></div>';
+  if(!liveCseId){
+   html+='<div class="gcseSetup"><b>One-time setup (site owner):</b> Google won\'t let another site load google.com/search inline, but Google\'s own <b>Programmable Search Engine</b> widget is built exactly for this — an embedded search box with results shown on your page. It takes about a minute:<br>1. Go to <a style="color:#fff" href="https://programmablesearchengine.google.com/" target="_blank" rel="noopener">programmablesearchengine.google.com</a> and create a search engine (choose "Search the entire web" or restrict it to your favourite results sites).<br>2. Copy its <b>Search engine ID</b> (the "cx" value).<br>3. Paste it below to try it now, or open the HTML file and set <code>GOOGLE_CSE_ID</code> near the top of the script so every visitor gets it automatically.'
+   +'<label>Search Engine ID (cx)</label><input id="cseIdInput" value="'+esc(liveCseId)+'" oninput="bindCseId(this.value)" placeholder="e.g. 013611231234567890123:abcdef12345"/>'
+   +'<div class="inputActions"><button class="primary" onclick="activateCse()">LOAD EMBEDDED SEARCH</button></div></div>';
+  }
+  html+='<div class="gcseWrap" id="googleSlot"></div>';
+  html+='<div class="googleSearchPage" style="margin-top:14px"><input id="googleInput" value="'+esc(state.googleQuery)+'" oninput="bindGoogleQuery(this.value)" onkeydown="googleSearchEnter(event)" placeholder="Or open a plain Google search for '+esc(g.name)+' results…"/><button class="primary" onclick="googleSearch()">'+iconSearch()+' OPEN IN NEW TAB</button></div>';
+  html+='<div class="googleShortcuts">'+[['Latest results',g.name+' latest results'],['Past 50 results',g.name+' past 50 results'],['Past 100 results',g.name+' past 100 results'],['Strategy research',g.name+' lottery strategy']].map(([label,q])=>'<button onclick="setGoogleShortcut(\''+esc(q).replace(/'/g,"&#39;")+'\')">'+label+'</button>').join('')+'</div>';
+  html+='<div class="googleNote"><b>How to use:</b> Type a query into the embedded search box above and results appear inline. Once you find a results page, copy the historical draws and use <b>DATA / PDF</b> or <b>PASTE RESULTS</b> to load them into LottoLab.</div>';
+  html+='</section>';
+ }
+
+ html+='<footer>LOTTO LAB • ANALYSIS AND PATTERN STUDY ONLY • LOTTERY OUTCOMES ARE RANDOM • USE RESPONSIBLY</footer>';
+ html+='</main>';
+
+ document.getElementById('root').innerHTML=html;
+ if(state.active==='google') mountGoogleSearch();
+}
+
+render();
+</script>
+</body>
+</html>
